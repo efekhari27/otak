@@ -1,38 +1,54 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
- 
-from setuptools import setup, find_packages
-import sys
+"""
+Setup script for a Python package
+"""
+import os
+import re
+from setuptools import setup
 
 # Get the version from __init__.py
-with open('otak/__init__.py') as fid:
-    for line in fid:
-        if line.startswith('__version__'):
-            version = line.strip().split()[-1][1:-1]
-            break
+path = os.path.join(os.path.dirname(__file__), 'otak', '__init__.py')
+with open(path) as f:
+    version_file = f.read()
 
-if sys.version_info < (3, 0):
-    install_requires.append('logging')
+version = re.search(r"^\s*__version__\s*=\s*['\"]([^'\"]+)['\"]",
+version_file, re.M)
+if version:
+    version = version.group(1)
+else:
+    raise RuntimeError("Unable to find version string.")
+
+# Long description
+with open("README.rst", "r") as fh:
+    long_description = fh.read()
+
 
 setup(
-    # library name
-    name='otak',
-
-    # code version
+    name="otak",
     version=version,
-
-    # list libraries to be imported
-    packages=find_packages(),
-
-
-    # Descriptions
-    description="Class implementing AK MCS, AK IS and AK SS",
-    long_description=open('README.rst').read(),
-	
-    setup_requires=['pytest-runner'],
-    
-    install_requires=['numpy',
-                      'openturns'],
-    tests_require=['pytest'],
-
-)
+    author="Mathieu Balesdent",
+    description="This repository is a package offering rare event estimation methods based on active surrogate models.",
+    license='GPLv3+',
+    keywords=[
+        'OpenTURNS', 
+        'Reliabillity'
+        ],
+    url="https://github.com/m-balesdent/otak",
+    packages=[
+        'otak', 
+        'test'
+        ],
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+        "Intended Audience :: Science/Research",
+        "Topic :: Software Development",
+        "Topic :: Scientific/Engineering",
+        ],
+    install_requires=[
+        "numpy",
+        "openturns>=1.18"
+        ],
+    )
